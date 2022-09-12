@@ -24,7 +24,7 @@ namespace TriangleLib
             {
                 if ( !float.TryParse( x, out float result ) )
                 {
-                    throw new ArgsParseException( "Не треугольник" );
+                    throw new ArgsParseException( "Неизвестная ошибка" );
                 }
                 return result;
             } );
