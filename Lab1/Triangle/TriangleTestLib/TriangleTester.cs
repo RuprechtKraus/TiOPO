@@ -72,7 +72,7 @@ namespace TriangleTestLib
                 throw new ArgumentNullException( nameof( line ) );
             }
 
-            Match match = Regex.Match( line, "^(([-\\,\\.0-9a-zA-Z]+\\s)+)?((\\\".*\\\")|(\\S*))\\r?$" );
+            Match match = Regex.Match( line, "^((?:[^=]+\\s)+)?=\\s((?:\\\".*\\\")|(?:\\S*))\\r?$" );
 
             if ( !match.Success )
             {
@@ -80,7 +80,7 @@ namespace TriangleTestLib
             }
 
             string sides = match.Groups[ 1 ].Value;
-            string expectedResult = match.Groups[ 3 ].Value.Replace("\"", "");
+            string expectedResult = match.Groups[ 2 ].Value.Replace("\"", "");
             TestArgs triangleArgs = new( sides, expectedResult );
 
             return triangleArgs;
