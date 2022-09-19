@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "TriangleTest": {
-      "commandName": "Project",
-      "commandLineArgs": "Test\\Triangle.exe input.txt output.txt"
-    }
-  }
-}

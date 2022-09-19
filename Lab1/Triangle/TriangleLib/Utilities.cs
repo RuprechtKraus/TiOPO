@@ -43,17 +43,13 @@ namespace TriangleLib
         /// <exception cref="InvalidEnumArgumentException"></exception>
         public static string ToTriangleTypeString( this TriangleType triangleType )
         {
-            switch ( triangleType )
+            return triangleType switch
             {
-                case TriangleType.Isosceles:
-                    return "Равнобедренный";
-                case TriangleType.Equilateral:
-                    return "Равносторонний";
-                case TriangleType.Ordinary:
-                    return "Обычный";
-                default:
-                    throw new InvalidEnumArgumentException( "Неизвестный тип треугольника" );
-            }
+                TriangleType.Isosceles => "Равнобедренный",
+                TriangleType.Equilateral => "Равносторонний",
+                TriangleType.Ordinary => "Обычный",
+                _ => throw new InvalidEnumArgumentException( "Неизвестный тип треугольника" ),
+            };
         }
     }
 }

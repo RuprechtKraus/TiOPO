@@ -72,7 +72,7 @@ namespace TriangleTestLib
                 throw new ArgumentNullException( nameof( line ) );
             }
 
-            Match match = Regex.Match( line, "^(([-\\,\\.0-9a-zA-Z]+\\s)+)((\\\".*\\\")|(\\S*))\\r?$" );
+            Match match = Regex.Match( line, "^(([-\\,\\.0-9a-zA-Z]+\\s)+)?((\\\".*\\\")|(\\S*))\\r?$" );
 
             if ( !match.Success )
             {
