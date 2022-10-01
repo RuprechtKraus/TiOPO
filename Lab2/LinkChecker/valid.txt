@@ -6,4 +6,4 @@ Link: http://links.qatl.ru/blog.html, Status: OK
 Link: http://links.qatl.ru/contact.html, Status: OK
 Link: http://links.qatl.ru/blog-single.html, Status: OK
 Links in total: 7
-Check date: 01.10.2022 0:58:52
+Check date: 01.10.2022 17:29:40
