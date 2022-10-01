@@ -9,19 +9,13 @@ if ( args.Length != 3 )
     return;
 }
 
-IWebDriver webDriver = new FirefoxDriver();
-
 try
 {
-    LinkStatusChecker linkChecker = new( args[0], webDriver );
+    LinkStatusChecker<FirefoxDriver> linkChecker = new( args[0] );
     LinkCheckingResult result = await linkChecker.CheckLinks();
     LinkStatusResultWriter.WriteToFile( result, args[1], args[2] );
 }
 catch ( Exception e )
 {
     Console.Error.WriteLine( e.Message );
-}
-finally
-{
-    webDriver.Quit();
 }

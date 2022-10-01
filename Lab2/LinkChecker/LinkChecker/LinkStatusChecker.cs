@@ -1,4 +1,3 @@
-using System.Net;
 using System.Text.RegularExpressions;
 using LinkChecker.Utilities;
 using OpenQA.Selenium;
@@ -19,21 +18,26 @@ namespace LinkChecker
         }
     }
 
-    public class LinkStatusChecker
+    public class LinkStatusChecker<TWebDriver> where TWebDriver : IWebDriver, new()
     {
         private readonly Regex _linkPattern;
-        public string Url { get; }
-        public IWebDriver WebDriver { get; }
+        private string _url = string.Empty;
+        public string Url
+        {
+            get => _url;
+            set
+            {
+                if ( !UrlValidator.IsValidUrl( value ) )
+                {
+                    throw new ArgumentException( "Url is not valid" );
+                }
+                _url = value;
+            }
+        }
 
-        public LinkStatusChecker( string url, IWebDriver webDriver )
+        public LinkStatusChecker( string url )
         {
             Url = url;
-            WebDriver = webDriver;
-
-            if ( !UrlValidator.IsValidUrl( Url ) )
-            {
-                throw new ArgumentException( "Url is not valid" );
-            }
 
             if ( Url.Last() != '/' )
             {
@@ -43,23 +47,25 @@ namespace LinkChecker
             _linkPattern = new Regex( Url + "(?:[^#][-a-zA-Z0-9()@:%_\\+.#~?&\\/=]*)" );
         }
 
-        
+
 
         public async Task<LinkCheckingResult> CheckLinks()
         {
-            WebDriver.Url = Url;
-
-            List<IWebElement> links = FindValidDistinctLinks();
+            using IWebDriver webDriver = new TWebDriver()
+            {
+                Url = Url
+            };
+            List<IWebElement> links = FindValidDistinctLinks( webDriver );
             LinkCheckingResult result = await ProcessLinks( links );
 
             return result;
         }
 
-        private List<IWebElement> FindValidDistinctLinks()
+        private List<IWebElement> FindValidDistinctLinks( IWebDriver webDriver )
         {
-            List<IWebElement> links = WebDriver.FindElements( By.TagName( "a" ) ).ToList();
+            List<IWebElement> links = webDriver.FindElements( By.TagName( "a" ) ).ToList();
             links = RemoveEmptyAndDuplicateLinks( links );
-
+      
             return links;
         }
 
