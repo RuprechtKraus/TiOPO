@@ -1,5 +1,0 @@
-Link: http://links.qatl.ru/links/502gateaway502.php, Status: BadGateway
-Link: http://links.qatl.ru/links/access401unauthorized.php, Status: Unauthorized
-Link: http://links.qatl.ru/links/deny403forbidden.php, Status: Forbidden
-Links in total: 3
-Check date: 01.10.2022 0:58:52

@@ -1,5 +1,4 @@
 using LinkChecker;
-using OpenQA.Selenium;
 using OpenQA.Selenium.Firefox;
 
 if ( args.Length != 3 )

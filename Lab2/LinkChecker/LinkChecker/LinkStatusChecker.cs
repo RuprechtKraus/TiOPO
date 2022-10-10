@@ -47,8 +47,6 @@ namespace LinkChecker
             _linkPattern = new Regex( Url + "(?:[^#][-a-zA-Z0-9()@:%_\\+.#~?&\\/=]*)" );
         }
 
-
-
         public async Task<LinkCheckingResult> CheckLinks()
         {
             using IWebDriver webDriver = new TWebDriver()
@@ -65,7 +63,7 @@ namespace LinkChecker
         {
             List<IWebElement> links = webDriver.FindElements( By.TagName( "a" ) ).ToList();
             links = RemoveEmptyAndDuplicateLinks( links );
-      
+
             return links;
         }
 
