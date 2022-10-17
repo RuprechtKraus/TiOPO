@@ -1,6 +1,5 @@
-using System.Text.RegularExpressions;
+using HtmlAgilityPack;
 using LinkChecker.Utilities;
-using OpenQA.Selenium;
 
 namespace LinkChecker
 {
@@ -8,7 +7,7 @@ namespace LinkChecker
     {
         public int ValidLinksCount;
         public int InvalidLinksCount;
-        public IDictionary<string, HttpResponseMessage> Responses;
+        public Dictionary<string, HttpResponseMessage> Responses;
 
         public LinkCheckingResult()
         {
@@ -18,105 +17,128 @@ namespace LinkChecker
         }
     }
 
-    public class LinkStatusChecker<TWebDriver> where TWebDriver : IWebDriver, new()
+    public class LinkStatusChecker
     {
-        private readonly Regex _linkPattern;
         private string _url = string.Empty;
-        public string Url
-        {
-            get => _url;
-            set
-            {
-                if ( !UrlValidator.IsValidUrl( value ) )
-                {
-                    throw new ArgumentException( "Url is not valid" );
-                }
-                _url = value;
-            }
-        }
+        private readonly HashSet<string> _visitedLinks = new();
 
-        public LinkStatusChecker( string url )
+        public async Task<LinkCheckingResult> CheckLinks( string url )
         {
-            Url = url;
-
-            if ( Url.Last() != '/' )
+            if ( !UrlValidator.IsValidUrl( url ) )
             {
-                Url += '/';
+                throw new ArgumentException( "Url is not valid" );
             }
 
-            _linkPattern = new Regex( Url + "(?:[^#][-a-zA-Z0-9()@:%_\\+.#~?&\\/=]*)" );
-        }
+            _url = url;
+            AppendSlashToUrl( ref _url );
 
-        public async Task<LinkCheckingResult> CheckLinks()
-        {
-            using IWebDriver webDriver = new TWebDriver()
-            {
-                Url = Url
-            };
-            List<IWebElement> links = FindValidDistinctLinks( webDriver );
-            LinkCheckingResult result = await ProcessLinks( links );
-
-            return result;
-        }
-
-        private List<IWebElement> FindValidDistinctLinks( IWebDriver webDriver )
-        {
-            List<IWebElement> links = webDriver.FindElements( By.TagName( "a" ) ).ToList();
-            links = RemoveEmptyAndDuplicateLinks( links );
-
-            return links;
-        }
-
-        private List<IWebElement> RemoveEmptyAndDuplicateLinks( List<IWebElement> links )
-        {
-            List<IWebElement> copy = links;
-
-            copy.RemoveAll( x =>
-            {
-                if ( !x.IsLink() )
-                {
-                    throw new ArgumentException( "WebElement is not a link" );
-                }
-
-                string href = x.GetAttribute( "href" );
-                if ( href == null || !_linkPattern.Match( href ).Success )
-                {
-                    return true;
-                }
-                return false;
-            } );
-
-            return copy.DistinctBy( x => x.GetAttribute( "href" ) ).ToList();
-        }
-
-        private static async Task<LinkCheckingResult> ProcessLinks( List<IWebElement> links )
-        {
+            HtmlWeb web = new();
             HttpClient httpClient = new();
+
+            HashSet<string> links = GetAllUrlsFromPage( web, _url ).ToHashSet();
+            HashSet<string> newLinks = new();
+
             LinkCheckingResult result = new();
 
-            foreach ( IWebElement link in links )
+            while ( links.Any() )
             {
-                string href = link.GetAttribute( "href" );
-                HttpResponseMessage response = await httpClient.GetAsync( href );
-
-                if ( !link.IsLink() )
+                foreach ( var link in links )
                 {
-                    throw new ArgumentException( "WebElement is not a link" );
+                    string absoluteUrl = string.Empty;
+
+                    try
+                    {
+                        absoluteUrl = TidyAndAbsolutizeUrl( _url, link );
+                    }
+                    catch ( UriFormatException )
+                    {
+                        continue;
+                    }
+
+                    if ( !absoluteUrl.StartsWith( _url ) || _visitedLinks.Contains( absoluteUrl ) )
+                    {
+                        continue;
+                    }
+
+                    _visitedLinks.Add( absoluteUrl );
+                    HttpResponseMessage response = await httpClient.GetAsync( absoluteUrl );
+
+                    AddResponseToResult( ref result, absoluteUrl, response );
+                    newLinks.UnionWith( GetAllUrlsFromPage( web, absoluteUrl ) );
+
+                    Console.WriteLine( @"{0} {1}", absoluteUrl, response.StatusCode );
                 }
 
-                if ( response.IsSuccessStatusCode )
-                {
-                    result.ValidLinksCount++;
-                }
-                else
-                {
-                    result.InvalidLinksCount++;
-                }
-
-                result.Responses[ href ] = response;
+                links = newLinks.ToHashSet();
+                newLinks.Clear();
             }
 
+            _url = string.Empty;
+            _visitedLinks.Clear();
+
             return result;
+        }
+
+        static void AppendSlashToUrl( ref string url )
+        {
+            url = url.Last() != '/' ? url + '/' : url;
+        }
+
+        static string TidyAndAbsolutizeUrl( string baseUrl, string url )
+        {
+            string href = RemoveAnchor( url );
+            href = RemoveQueryParams( href );
+
+            return GetAbsoluteUrlString( baseUrl, href );
+        }
+
+        static string GetAbsoluteUrlString( string baseUrl, string url )
+        {
+            var uri = new Uri( url, UriKind.RelativeOrAbsolute );
+
+            if ( !uri.IsAbsoluteUri )
+            {
+                uri = new Uri( new Uri( baseUrl ), uri );
+            }
+
+            return uri.ToString();
+        }
+
+        static string RemoveAnchor( string url )
+        {
+            int index = url.IndexOf( '#' );
+            return index > -1 ? url.Remove( index ) : url;
+        }
+
+        static string RemoveQueryParams( string url )
+        {
+            int index = url.IndexOf( '?' );
+            return index > -1 ? url.Remove( index ) : url;
+        }
+
+        static void AddResponseToResult(
+            ref LinkCheckingResult result, string url, HttpResponseMessage response )
+        {
+            if ( response.IsSuccessStatusCode )
+            {
+                result.ValidLinksCount++;
+            }
+            else
+            {
+                result.InvalidLinksCount++;
+            }
+
+            result.Responses[ url ] = response;
+        }
+
+        static IEnumerable<string> GetAllUrlsFromPage( HtmlWeb web, string url )
+        {
+            HtmlDocument htmlDoc = web.Load( url );
+            HtmlNodeCollection nodes = htmlDoc.DocumentNode.SelectNodes( "//a[@href]" );
+
+            return nodes != null ?
+                nodes.Select( x => x.Attributes[ "href" ].Value ) :
+                new List<string>();
         }
     }
 }

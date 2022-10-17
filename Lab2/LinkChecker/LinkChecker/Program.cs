@@ -1,5 +1,4 @@
 using LinkChecker;
-using OpenQA.Selenium.Firefox;
 
 if ( args.Length != 3 )
 {
@@ -10,9 +9,9 @@ if ( args.Length != 3 )
 
 try
 {
-    LinkStatusChecker<FirefoxDriver> linkChecker = new( args[0] );
-    LinkCheckingResult result = await linkChecker.CheckLinks();
-    LinkStatusResultWriter.WriteToFile( result, args[1], args[2] );
+    LinkStatusChecker linkChecker = new();
+    LinkCheckingResult result = await linkChecker.CheckLinks( args[ 0 ] );
+    LinkStatusResultWriter.WriteToFile( result, args[ 1 ], args[ 2 ] );
 }
 catch ( Exception e )
 {

@@ -1,8 +1,8 @@
 {
   "profiles": {
     "LinkChecker": {
-      "commandName": "Project",
-      "commandLineArgs": "http://links.qatl.ru/ valid.txt invalid.txt"
+        "commandName": "Project",
+        "commandLineArgs": "http://links.qatl.ru/ valid.txt invalid.txt"
     }
   }
 }
