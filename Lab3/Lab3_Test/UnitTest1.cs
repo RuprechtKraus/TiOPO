@@ -43,7 +43,7 @@ namespace Lab3_Test
             Assert.That( _car.IsTurnedOn );
         }
 
-        [ Test]
+        [Test]
         public void SetGear_ZeroGear_CarIsAtFirstGearAndZeroSpeedAndNoDirection()
         {
             _car.TurnOnEngine();
@@ -92,6 +92,28 @@ namespace Lab3_Test
         }
 
         [Test]
+        public void SetGear_NegativeTwoGear_CannotSetGear()
+        {
+            _car.TurnOnEngine();
+
+            bool wasGearSet = _car.SetGear( -2 );
+
+            Assert.That( !wasGearSet );
+            Assert.That( _car.Gear, Is.EqualTo( 0 ) );
+        }
+
+        [Test]
+        public void SetGear_ExceedingMaxGear_CannotSetGear()
+        {
+            _car.TurnOnEngine();
+
+            bool wasGearSet = _car.SetGear( 6 );
+
+            Assert.That( !wasGearSet );
+            Assert.That( _car.Gear, Is.EqualTo( 0 ) );
+        }
+
+        [Test]
         public void SetGear_WithEngineOff_CannotSetGear()
         {
             bool wasGearSet = _car.SetGear( 1 );
@@ -113,13 +135,62 @@ namespace Lab3_Test
         }
 
         [Test]
+        public void SetGear_ZeroGearWhileMovingForwards_StillMovingForwards()
+        {
+            _car.TurnOnEngine();
+            _car.SetGear( 1 );
+            _car.SetSpeed( 10 );
+            _car.SetGear( 0 );
+
+            Assert.That( _car.Gear, Is.EqualTo( 0 ) );
+            Assert.That( _car.Direction, Is.EqualTo( Directions.Forward ) );
+        }
+
+        [Test]
+        public void SetGear_ZeroGearWhileMovingBackwards_StillMovingBackwards()
+        {
+            _car.TurnOnEngine();
+            _car.SetGear( -1 );
+            _car.SetSpeed( 10 );
+            _car.SetGear( 0 );
+
+            Assert.That( _car.Gear, Is.EqualTo( 0 ) );
+            Assert.That( _car.Direction, Is.EqualTo( Directions.Backwards ) );
+        }
+
+        [Test]
+        public void SetGear_ReverseGearWhileMovingBackwardsAtZeroGear_CannotSetGear()
+        {
+            _car.TurnOnEngine();
+            _car.SetGear( -1 );
+            _car.SetSpeed( 10 );
+            _car.SetGear( 0 );
+
+            bool wasGearSet = _car.SetGear( -1 );
+
+            Assert.That( !wasGearSet );
+            Assert.That( _car.Gear, Is.EqualTo( 0 ) );
+        }
+
+        [Test]
         public void SetSpeed_AtZeroGear_CannotSetSpeed()
         {
             _car.TurnOnEngine();
 
-            bool wasGearSet = _car.SetGear( 0 );
+            bool wasSpeedSet = _car.SetGear( 0 );
 
-            Assert.That( wasGearSet );
+            Assert.That( wasSpeedSet );
+        }
+
+        [Test]
+        public void SetSpeed_IncreaseSpeedAtZeroGear_CannotSetSpeed()
+        {
+            _car.TurnOnEngine();
+
+            bool wasSpeedSet = _car.SetSpeed( 10 );
+
+            Assert.That( !wasSpeedSet );
+            Assert.That( _car.Speed, Is.EqualTo( 0 ) );
         }
 
         [Test]
@@ -135,6 +206,32 @@ namespace Lab3_Test
                 Assert.That( _car.Speed, Is.EqualTo( 10 ) );
                 Assert.That( _car.Direction, Is.EqualTo( Directions.Forward ) );
             } );
+        }
+
+        [Test]
+        public void SetSpeed_IncreaseSpeedWhileMoving_SpeedIncreased()
+        {
+            _car.TurnOnEngine();
+            _car.SetGear( 1 );
+            _car.SetSpeed( 10 );
+
+            bool wasSpeedSet = _car.SetSpeed( 20 );
+
+            Assert.That( wasSpeedSet );
+            Assert.That( _car.Speed, Is.EqualTo( 20 ) );
+        }
+
+        [Test]
+        public void SetSpeed_DecreaseSpeedWhileMoving_SpeedIncreaed()
+        {
+            _car.TurnOnEngine();
+            _car.SetGear( 1 );
+            _car.SetSpeed( 10 );
+
+            bool wasSpeedSet = _car.SetSpeed( 5 );
+
+            Assert.That( wasSpeedSet );
+            Assert.That( _car.Speed, Is.EqualTo( 5 ) );
         }
 
         [Test]
@@ -181,6 +278,19 @@ namespace Lab3_Test
 
             Assert.That( !wasSpeedSet );
             Assert.That( _car.Speed, Is.EqualTo( 0 ) );
+        }
+
+        [Test]
+        public void SetSpeed_NewSpeedLowerThanGearUpperBound_CannotSetSpeed()
+        {
+            _car.TurnOnEngine();
+            _car.SetGear( 1 );
+            _car.SetSpeed( 30 );
+            _car.SetGear( 2 );
+            bool wasSpeedSet = _car.SetSpeed( 10 );
+
+            Assert.That( !wasSpeedSet );
+            Assert.That( _car.Speed, Is.EqualTo( 30 ) );
         }
     }
 }
