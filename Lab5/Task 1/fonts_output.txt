@@ -1,0 +1,44 @@
+Fonts	Size	Font style	Text color	Underline	Underline color	Strikethrough	Double strikethrough	Superscript	Subscript	Small caps	All caps	Equalize character height	Offset
+Comic Sans MS	1	regular	white	dotted line	white	true	false	true	false	true	false	true	30
+Courier New	20.5	italic	red	double line	white	false	true	false	true	false	true	false	-1
+Arial	10	bold	black	wavy line	red	true	false	false	true	false	false	true	-1
+Times New Roman	3000	bold italic	black	single line	white	false	true	false	true	true	false	false	-100
+Times New Roman	20.5	bold italic	white	dotted line	black	true	false	false	true	false	true	true	-100
+Arial	1	bold	black	none	none	false	true	true	false	false	true	false	100
+Courier New	3000	regular	red	none	none	false	false	false	true	true	false	true	-1
+Comic Sans MS	10	italic	white	wavy line	black	false	true	false	true	true	false	false	-1
+Times New Roman	10	regular	red	single line	red	false	true	true	false	false	true	false	30
+Comic Sans MS	3000	italic	white	none	none	false	true	true	false	false	true	true	1
+Courier New	20.5	bold	black	double line	black	true	false	false	false	true	false	false	0
+Arial	1	italic	red	single line	blue	true	false	false	true	false	true	true	-1
+Arial	20.5	bold italic	red	wavy line	black	false	true	true	false	false	true	true	30
+Courier New	10	bold italic	white	none	none	false	true	false	true	false	true	false	-25
+Arial	10	regular	black	double line	white	true	false	true	false	true	false	false	1
+Comic Sans MS	3000	bold	red	dotted line	red	false	true	false	true	false	true	true	-100
+Times New Roman	10	italic	black	dotted line	green	false	true	false	true	true	false	false	-1
+Times New Roman	3000	bold	white	double line	white	true	false	false	true	true	false	true	-25
+Comic Sans MS	1	bold italic	white	single line	green	false	true	false	false	false	true	true	0
+Courier New	3000	bold	black	double line	green	true	false	true	false	false	true	false	30
+Courier New	1	bold italic	white	wavy line	red	false	true	true	false	false	true	true	1
+Comic Sans MS	20.5	regular	black	wavy line	blue	false	true	false	true	true	false	false	-25
+Times New Roman	3000	bold italic	white	double line	blue	true	false	true	false	true	false	true	100
+Times New Roman	3000	regular	red	wavy line	white	true	false	false	false	false	true	false	0
+Courier New	10	bold	white	dotted line	blue	true	false	true	false	false	true	true	30
+Arial	20.5	bold	red	single line	green	false	true	false	true	true	false	true	-25
+Comic Sans MS	20.5	regular	red	wavy line	green	false	true	true	false	false	true	true	100
+Courier New	20.5	bold	red	single line	green	false	true	true	false	false	true	true	1
+Arial	1	regular	white	double line	blue	true	false	false	true	false	true	false	-100
+Courier New	10	italic	white	double line	red	false	true	true	false	false	true	true	100
+Times New Roman	1	bold	white	dotted line	white	true	false	true	false	false	false	false	100
+Arial	10	italic	red	dotted line	red	false	true	false	false	true	false	true	0
+Arial	3000	regular	red	single line	black	true	false	true	false	false	false	true	100
+Times New Roman	20.5	italic	red	dotted line	red	true	false	false	true	false	true	true	-25
+Comic Sans MS	1	bold	black	double line	black	true	false	false	true	true	false	true	-25
+Times New Roman	20.5	italic	black	none	none	false	true	false	true	false	false	true	-100
+Arial	1	bold	white	none	none	true	false	false	false	true	false	false	0
+Times New Roman	3000	regular	black	dotted line	blue	false	false	true	false	false	true	false	1
+Arial	20.5	regular	white	wavy line	blue	false	false	false	false	true	false	false	0
+Courier New	10	italic	red	wavy line	green	false	true	false	true	false	true	false	-100
+Arial	1	bold italic	red	single line	blue	false	true	false	true	false	true	false	-1
+Arial	1	regular	white	single line	black	false	true	true	false	false	true	false	1
+Arial	3000	italic	black	none	none	false	true	true	false	false	false	true	30
